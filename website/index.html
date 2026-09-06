@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Café Location Intelligence — Hyderabad Market Analysis</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Leaflet.js CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+
+    <!-- NAVIGATION BAR -->
+    <nav class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">☕</span>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-amber-400 via-orange-400 to-amber-200 bg-clip-text text-transparent">
+                        Café Intelligence Portal
+                    </h1>
+                    <p class="text-xs text-slate-400">Hyderabad, Telangana | Market Opportunity Analysis</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4 text-sm">
+                <a href="#calculator" class="text-slate-300 hover:text-white transition">Scoring Engine</a>
+                <a href="#map-section" class="text-slate-300 hover:text-white transition">Opportunity Map</a>
+                <a href="#leaderboard" class="text-slate-300 hover:text-white transition">Leaderboard</a>
+                <a href="#analytics" class="text-slate-300 hover:text-white transition">Analytics</a>
+                
+                <span class="bg-blue-600/20 text-blue-400 text-xs px-3 py-1.5 rounded-full border border-blue-500/30 flex items-center gap-1.5 font-mono">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Streamlit Ready: app.py
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION & KPI METRIC CARDS -->
+    <header class="max-w-7xl mx-auto px-6 pt-8 pb-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center mb-8">
+            <div class="lg:col-span-2">
+                <span class="px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full text-xs font-semibold uppercase tracking-wider">
+                    Data-Driven Expansion Support System
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3 leading-tight">
+                    Optimize Café Location Decisions Across Hyderabad
+                </h2>
+                <p class="text-slate-400 mt-3 text-base leading-relaxed">
+                    Evaluate 20 key Hyderabad commercial and residential hubs using dynamic multi-criteria scoring across footfall, competitor density, commercial rent affordability, metro accessibility, and corporate/college hub density.
+                </p>
+                <div class="flex flex-wrap gap-4 mt-6">
+                    <a href="#calculator" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm transition shadow-lg shadow-blue-500/25 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders"></i> Open What-If Calculator
+                    </a>
+                    <a href="#map-section" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg font-semibold text-sm transition flex items-center gap-2">
+                        <i class="fa-solid fa-map-location-dot"></i> View Hyderabad Map
+                    </a>
+                </div>
+            </div>
+
+            <!-- Disclaimer Box -->
+            <div class="glass-card p-5 border border-slate-700/80 rounded-xl">
+                <div class="flex items-center gap-2 text-amber-400 text-sm font-semibold mb-2">
+                    <i class="fa-solid fa-circle-info"></i> Dataset Attribution & Scope
+                </div>
+                <p class="text-xs text-slate-300 leading-normal">
+                    Demonstration analytics model based on synthetic market indicators across Hyderabad neighborhoods including Gachibowli, Hitec City, Jubilee Hills, Ameerpet, and Secunderabad.
+                </p>
+                <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between text-xs text-slate-400">
+                    <span>Target City: <strong>Hyderabad</strong></span>
+                    <span>Model: <strong>Multi-Criteria Min-Max</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOP KPI BANNER CARDS -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div class="glass-card p-4 rounded-xl border border-slate-800">
+                <span class="text-xs text-slate-400 uppercase font-semibold">Analyzed Hubs</span>
+                <div id="kpi-total-locations" class="text-2xl font-black text-white mt-1">20</div>
+                <span class="text-[11px] text-slate-500">Filtered locations</span>
+            </div>
+
+            <div class="glass-card p-4 rounded-xl border border-slate-800">
+                <span class="text-xs text-slate-400 uppercase font-semibold">Avg Monthly Rent</span>
+                <div id="kpi-avg-rent" class="text-2xl font-black text-emerald-400 mt-1">₹118,500</div>
+                <span class="text-[11px] text-slate-500">Commercial lease</span>
+            </div>
+
+            <div class="glass-card p-4 rounded-xl border border-slate-800">
+                <span class="text-xs text-slate-400 uppercase font-semibold">Avg Competing Cafés</span>
+                <div id="kpi-avg-cafes" class="text-2xl font-black text-blue-400 mt-1">32.4</div>
+                <span class="text-[11px] text-slate-500">Per neighborhood</span>
+            </div>
+
+            <div class="glass-card p-4 rounded-xl border border-slate-800">
+                <span class="text-xs text-slate-400 uppercase font-semibold">Top Ranked Hub</span>
+                <div id="kpi-top-area" class="text-xl font-bold text-amber-400 mt-1 truncate">Gachibowli</div>
+                <span class="text-[11px] text-slate-500">Highest composite score</span>
+            </div>
+
+            <div class="glass-card p-4 rounded-xl border border-slate-800 col-span-2 sm:col-span-1">
+                <span class="text-xs text-slate-400 uppercase font-semibold">Top Score</span>
+                <div id="kpi-top-score" class="text-2xl font-black text-purple-400 mt-1">88.5 / 100</div>
+                <span class="text-[11px] text-slate-500">Excellent Opportunity</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECTION 1: WHAT-IF SCORING ENGINE & CONTROLS -->
+    <section id="calculator" class="max-w-7xl mx-auto px-6 py-8">
+        <div class="glass-card p-6 rounded-2xl border border-slate-800">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
+                <div>
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-blue-400"></i> Interactive "What-If" Scoring Engine
+                    </h3>
+                    <p class="text-sm text-slate-400 mt-1">Adjust scoring dimension weights to simulate custom business priorities in real time.</p>
+                </div>
+                <button id="btn-reset-weights" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 rounded border border-slate-700 transition">
+                    <i class="fa-solid fa-rotate-left mr-1"></i> Reset Default Weights
+                </button>
+            </div>
+
+            <!-- 6 Weight Sliders -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                <!-- Demand -->
+                <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
+                    <div class="flex justify-between text-xs font-semibold mb-2">
+                        <span class="text-slate-300"><i class="fa-solid fa-users text-blue-400 mr-1"></i> Customer Demand</span>
+                        <span id="w-demand-val" class="text-blue-400 font-mono font-bold">0.30</span>
+                    </div>
+                    <input type="range" id="w-demand" min="0.0" max="1.0" step="0.05" value="0.30" class="w-full h-2 bg-slate-700 rounded-lg cursor-pointer">
+                    <p class="text-[11px] text-slate-500 mt-1">Footfall, population, commercial & residential density</p>
+                </div>
+
+                <!-- Competition Opportunity -->
+                <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
+                    <div class="flex justify-between text-xs font-semibold mb-2">
+                        <span class="text-slate-300"><i class="fa-solid fa-store text-emerald-400 mr-1"></i> Competition Opp.</span>
+                        <span id="w-competition-val" class="text-emerald-400 font-mono font-bold">0.20</span>
+                    </div>
+                    <input type="range" id="w-competition" min="0.0" max="1.0" step="0.05" value="0.20" class="w-full h-2 bg-slate-700 rounded-lg cursor-pointer">
+                    <p class="text-[11px] text-slate-500 mt-1">Inverted café count (fewer cafes = higher score)</p>
+                </div>
+
+                <!-- Rent Affordability -->
+                <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
+                    <div class="flex justify-between text-xs font-semibold mb-2">
+                        <span class="text-slate-300"><i class="fa-solid fa-indian-rupee-sign text-amber-400 mr-1"></i> Rent Affordability</span>
+                        <span id="w-rent-val" class="text-amber-400 font-mono font-bold">0.20</span>
+                    </div>
+                    <input type="range" id="w-rent" min="0.0" max="1.0" step="0.05" value="0.20" class="w-full h-2 bg-slate-700 rounded-lg cursor-pointer">
+                    <p class="text-[11px] text-slate-500 mt-1">Inverted monthly lease rent (lower rent = higher score)</p>
+                </div>
+
+                <!-- Accessibility -->
+                <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
+                    <div class="flex justify-between text-xs font-semibold mb-2">
+                        <span class="text-slate-300"><i class="fa-solid fa-train-subway text-purple-400 mr-1"></i> Metro & Parking</span>
+                        <span id="w-accessibility-val" class="text-purple-400 font-mono font-bold">0.15</span>
+                    </div>
+                    <input type="range" id="w-accessibility" min="0.0" max="1.0" step="0.05" value="0.15" class="w-full h-2 bg-slate-700 rounded-lg cursor-pointer">
+                    <p class="text-[11px] text-slate-500 mt-1">Proximity to metro & parking availability score</p>
+                </div>
+
+                <!-- Corporate & College Hub -->
+                <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
+                    <div class="flex justify-between text-xs font-semibold mb-2">
+                        <span class="text-slate-300"><i class="fa-solid fa-building text-pink-400 mr-1"></i> Corporate & College</span>
+                        <span id="w-potential-val" class="text-pink-400 font-mono font-bold">0.10</span>
+                    </div>
+                    <input type="range" id="w-potential" min="0.0" max="1.0" step="0.05" value="0.10" class="w-full h-2 bg-slate-700 rounded-lg cursor-pointer">
+                    <p class="text-[11px] text-slate-500 mt-1">Office IT parks and student college density</p>
+                </div>
+
+                <!-- Café Rating Benchmark -->
+                <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
+                    <div class="flex justify-between text-xs font-semibold mb-2">
+                        <span class="text-slate-300"><i class="fa-solid fa-star text-cyan-400 mr-1"></i> Rating Benchmark</span>
+                        <span id="w-rating-val" class="text-cyan-400 font-mono font-bold">0.05</span>
+                    </div>
+                    <input type="range" id="w-rating" min="0.0" max="1.0" step="0.05" value="0.05" class="w-full h-2 bg-slate-700 rounded-lg cursor-pointer">
+                    <p class="text-[11px] text-slate-500 mt-1">Benchmark quality of existing local cafes</p>
+                </div>
+            </div>
+
+            <!-- Location Search & Filters Bar -->
+            <div class="pt-4 border-t border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                <!-- Search Input -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Search Neighborhood</label>
+                    <div class="relative">
+                        <input type="text" id="search-area" placeholder="e.g. Gachibowli, Jubilee Hills..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 pl-9 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-slate-500"></i>
+                    </div>
+                </div>
+
+                <!-- Rent Budget Filter -->
+                <div>
+                    <div class="flex justify-between text-xs font-semibold mb-1">
+                        <span class="text-slate-400">Max Monthly Rent Budget</span>
+                        <span id="filter-rent-val" class="text-emerald-400 font-bold">₹250,000</span>
+                    </div>
+                    <input type="range" id="filter-rent" min="50000" max="250000" step="10000" value="250000" class="w-full h-2 bg-slate-700 rounded-lg cursor-pointer">
+                </div>
+
+                <!-- Category Checkboxes -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Opportunity Tier Filter</label>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <label class="inline-flex items-center gap-1 bg-slate-900 px-2 py-1 rounded border border-slate-700 cursor-pointer">
+                            <input type="checkbox" value="Excellent Opportunity" checked class="category-checkbox accent-emerald-500">
+                            <span class="text-emerald-400 font-semibold">Excellent</span>
+                        </label>
+                        <label class="inline-flex items-center gap-1 bg-slate-900 px-2 py-1 rounded border border-slate-700 cursor-pointer">
+                            <input type="checkbox" value="Good Opportunity" checked class="category-checkbox accent-blue-500">
+                            <span class="text-blue-400 font-semibold">Good</span>
+                        </label>
+                        <label class="inline-flex items-center gap-1 bg-slate-900 px-2 py-1 rounded border border-slate-700 cursor-pointer">
+                            <input type="checkbox" value="Moderate Opportunity" checked class="category-checkbox accent-amber-500">
+                            <span class="text-amber-400 font-semibold">Moderate</span>
+                        </label>
+                        <label class="inline-flex items-center gap-1 bg-slate-900 px-2 py-1 rounded border border-slate-700 cursor-pointer">
+                            <input type="checkbox" value="Low Opportunity" checked class="category-checkbox accent-red-500">
+                            <span class="text-red-400 font-semibold">Low</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: MAP & CHARTS DUAL VIEW -->
+    <section id="map-section" class="max-w-7xl mx-auto px-6 py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- LEAFLET INTERACTIVE MAP (7 Cols) -->
+            <div class="lg:col-span-7 glass-card p-5 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-map-marked-alt text-emerald-400"></i> Interactive Hyderabad Opportunity Map
+                        </h3>
+                        <p class="text-xs text-slate-400">Click pins to view rent, footfall, and strategic insights.</p>
+                    </div>
+                    <span class="text-xs text-slate-400 flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Excellent
+                        <span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span> Good
+                        <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> Moderate
+                    </span>
+                </div>
+                
+                <div id="leaflet-map" class="shadow-inner"></div>
+            </div>
+
+            <!-- ANALYTICS CHARTS (5 Cols) -->
+            <div id="analytics" class="lg:col-span-5 flex flex-col gap-6">
+                <!-- Rank Chart -->
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 flex-1">
+                    <h4 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-simple text-blue-400"></i> Top Opportunity Score Leaderboard
+                    </h4>
+                    <div class="h-56">
+                        <canvas id="chart-rank"></canvas>
+                    </div>
+                </div>
+
+                <!-- Scatter Chart -->
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 flex-1">
+                    <h4 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-scatter text-amber-400"></i> Monthly Rent vs. Opportunity Score
+                    </h4>
+                    <div class="h-56">
+                        <canvas id="chart-scatter"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: DETAILED LEADERBOARD TABLE -->
+    <section id="leaderboard" class="max-w-7xl mx-auto px-6 py-8">
+        <div class="glass-card p-6 rounded-2xl border border-slate-800">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-table-list text-purple-400"></i> Hyderabad Market Leaderboard
+                    </h3>
+                    <p class="text-xs text-slate-400">Click any row to open the complete Location Deep Dive & Strategy Audit.</p>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-900/80 text-slate-400 uppercase border-b border-slate-800">
+                            <th class="py-3 px-4">Rank</th>
+                            <th class="py-3 px-4">Area</th>
+                            <th class="py-3 px-4">Opportunity Tier</th>
+                            <th class="py-3 px-4">Overall Score</th>
+                            <th class="py-3 px-4">Avg Monthly Rent</th>
+                            <th class="py-3 px-4">Café Count</th>
+                            <th class="py-3 px-4">Daily Footfall</th>
+                            <th class="py-3 px-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Populated by app.js -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- STRATEGY DEEP DIVE MODAL -->
+    <div id="deep-dive-modal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="glass-card max-w-3xl w-full max-h-[90vh] overflow-y-auto rounded-2xl p-6 border border-slate-700 shadow-2xl relative">
+            <!-- Close Button -->
+            <button onclick="closeDeepDiveModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Modal Header -->
+            <div class="flex flex-wrap items-center gap-3 border-b border-slate-800 pb-4 mb-4">
+                <h3 id="modal-area-name" class="text-2xl font-bold text-white">Area Name</h3>
+                <span id="modal-category-badge" class="px-3 py-1 rounded-full text-xs font-bold badge-excellent">Excellent</span>
+            </div>
+
+            <!-- Key Metrics Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6 bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-center">
+                <div>
+                    <span class="text-[11px] text-slate-400 uppercase font-semibold">Overall Score</span>
+                    <div id="modal-score" class="text-lg font-black text-emerald-400">88.5</div>
+                </div>
+                <div>
+                    <span class="text-[11px] text-slate-400 uppercase font-semibold">Market Rank</span>
+                    <div id="modal-rank" class="text-lg font-black text-blue-400">#1</div>
+                </div>
+                <div>
+                    <span class="text-[11px] text-slate-400 uppercase font-semibold">Avg Rent</span>
+                    <div id="modal-rent" class="text-lg font-black text-amber-400">₹140,000</div>
+                </div>
+                <div>
+                    <span class="text-[11px] text-slate-400 uppercase font-semibold">Daily Footfall</span>
+                    <div id="modal-footfall" class="text-lg font-black text-purple-400">18,500</div>
+                </div>
+                <div>
+                    <span class="text-[11px] text-slate-400 uppercase font-semibold">Cafés</span>
+                    <div id="modal-cafes" class="text-lg font-black text-pink-400">42</div>
+                </div>
+            </div>
+
+            <!-- Verdict & Strategy Banner -->
+            <div class="bg-blue-950/40 border border-blue-800/50 p-4 rounded-xl mb-6">
+                <div class="text-xs font-semibold text-blue-400 uppercase tracking-wider">Business Verdict</div>
+                <div id="modal-verdict" class="text-lg font-extrabold text-white mt-0.5">Strong Candidate (Prime Location)</div>
+                <div class="mt-3 pt-3 border-t border-blue-900/60">
+                    <span class="text-xs font-bold text-slate-300 block mb-1">💡 Recommended Retail Strategy:</span>
+                    <p id="modal-strategy" class="text-sm text-slate-200 leading-relaxed"></p>
+                </div>
+            </div>
+
+            <!-- Sub-Score Breakdown & Strengths/Risks Dual Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                <!-- Sub-score Breakdown -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase text-slate-400 mb-2">Dimension Sub-Score Breakdown</h4>
+                    <div class="h-52 bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+                        <canvas id="chart-modal-sub"></canvas>
+                    </div>
+                </div>
+
+                <!-- Strengths & Risks -->
+                <div class="flex flex-col gap-4">
+                    <div>
+                        <h4 class="text-xs font-bold uppercase text-emerald-400 mb-2">🟢 Key Strengths</h4>
+                        <ul id="modal-strengths" class="space-y-1.5"></ul>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold uppercase text-amber-400 mb-2">🔴 Commercial Risks</h4>
+                        <ul id="modal-risks" class="space-y-1.5"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-800 mt-12 py-8 bg-slate-950 text-slate-400 text-xs">
+        <div class="max-w-7xl mx-auto px-6 flex flex-wrap justify-between items-center gap-4">
+            <div>
+                <p class="font-semibold text-slate-300">☕ Café Location Intelligence & Market Opportunity Analysis</p>
+                <p class="text-[11px] text-slate-500 mt-0.5">Target City: Hyderabad, Telangana, India | Data-Driven Decision Support System</p>
+            </div>
+            <div class="flex items-center gap-4 text-slate-400">
+                <span>SQLite DB Integration</span>
+                <span>Streamlit App: <code>app.py</code></span>
+                <span>Min-Max Scoring Model</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS SCRIPTS -->
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
