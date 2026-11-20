@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Narasimha PG">
-  <title>Narasimha: PG Hostel Manager</title>
+  <title>Narasimha: PG Hostel Manager — Commercial SaaS Platform</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -24,6 +24,7 @@
             brand: {
               50: '#eff6ff',
               100: '#dbeafe',
+              200: '#bfdbfe',
               500: '#3b82f6',
               600: '#2563eb',
               700: '#1d4ed8',
@@ -51,7 +52,9 @@
   <!-- Application Root -->
   <div id="app"></div>
 
-  <!-- Core Script -->
+  <!-- Database & Business Logic Layer -->
+  <script src="./js/db.js"></script>
+  <!-- Application UI Controller & User Interaction Layer -->
   <script src="./js/app.js"></script>
 </body>
 </html>

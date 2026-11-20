@@ -19,7 +19,9 @@ global.document = {
   addEventListener: () => {}
 };
 
-// Load app code by extracting class definitions
+// Load db and app code
+const dbCode = fs.readFileSync('js/db.js', 'utf8');
+eval(dbCode);
 const appCode = fs.readFileSync('js/app.js', 'utf8');
 eval(appCode);
 

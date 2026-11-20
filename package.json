@@ -1,0 +1,19 @@
+{
+  "name": "narasimha-pg-hostel-manager",
+  "version": "3.0.0",
+  "description": "Commercial PG Hostel Management SaaS with Multi-Hostel, Sharing Pricing, Student Management & Automated Rent Reminders",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node tests/test_saas_full.js"
+  },
+  "keywords": [
+    "pg-hostel-manager",
+    "hostel-management",
+    "saas",
+    "rent-reminders",
+    "hyderabad"
+  ],
+  "author": "Antigravity Senior Full-Stack Engineer",
+  "license": "ISC"
+}
